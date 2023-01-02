@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Renommer mes photos
+Comment=Your Comment for your Python script
+Exec=python3 /home/ahorcholle/git/rename-images/Rename.py
+Icon=python
+Type=Application
