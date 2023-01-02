@@ -1,9 +1,11 @@
 # Rename Images with Date Photo Taken
 
 Purpose: Renames image files in a folder based on date photo taken from EXIF metadata
+
 Improvement: Added a GUI with pysimpleGUI
 
 Original Author: Matthew Renze
+
 Updator: TH3VenGeur
 
 Usage: python3 Rename.py 
