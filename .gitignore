@@ -6,4 +6,6 @@
 !*.md
 !LICENSE
 !.gitignore
-
+!*.desktop
+!images/demo.png
+!images
