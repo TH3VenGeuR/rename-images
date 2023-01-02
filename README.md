@@ -8,7 +8,7 @@ Updator: TH3VenGeur
 
 Usage: python3 Rename.py 
 
-[demo](image/demo.png)
+[demo](images/demo.png)
 
 Requirements:
  - pip3 install PySimpleGUI
