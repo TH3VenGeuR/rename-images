@@ -1,13 +1,17 @@
 # Rename Images with Date Photo Taken
 
 Purpose: Renames image files in a folder based on date photo taken from EXIF metadata
+Improvement: Added a GUI with pysimpleGUI
 
-Author: Matthew Renze
+Original Author: Matthew Renze
+Updator: TH3VenGeur
 
-Usage: python.exe Rename.py input-folder
-  - input-folder = the directory containing the image files to be renamed
+Usage: python3 Rename.py 
 
-Example: python.exe Rename.py C:\Photos
+[demo](image/demo.png)
+
+Requirements:
+ - pip3 install PySimpleGUI
 
 Behavior:  
  - Given a photo named "Photo Apr 01, 5 54 17 PM.jpg"  
