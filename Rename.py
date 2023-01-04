@@ -164,9 +164,13 @@ while True:
             # Open the image
             image = Image.open(old_file_path)
             # Get the date taken from EXIF metadata
-            date_taken = image._getexif()[36867]
+            try:
+              date_taken = image._getexif()[36867]
+              mydict[file_name] = date_taken
+            except:
+              print("skipping " + file_name)
+
             image.close()
-            mydict[file_name] = date_taken
 
         sorted_by_date_photos = dict(sorted(mydict.items(),key=lambda x:x[1]))
 
@@ -194,8 +198,9 @@ while True:
         
             # Close the image
             image.close()
-            
-            if date_format == "daymonthinc":
+            if date_taken == "None":
+              print("no exif, skipping") 
+            elif date_format == "daymonthinc":
               date_day = date_taken.replace(" ",":").split(":")[2]
               date_month = date_taken.replace(" ",":").split(":")[1]
               month_in_letter = month_languages.get(language, {}).get(date_month)
