@@ -35,71 +35,71 @@ import PySimpleGUI as sg
 # Set dict for month in different language
 month_languages = {
   "fr": {
-    "1": "janvier",
-    "2": "février",
-    "3": "mars",
-    "4": "avril",
-    "5": "mai",
-    "6": "juin",
-    "7": "juillet",
-    "8": "aout",
-    "9": "septembre",
+    "01": "janvier",
+    "02": "février",
+    "03": "mars",
+    "04": "avril",
+    "05": "mai",
+    "06": "juin",
+    "07": "juillet",
+    "08": "aout",
+    "09": "septembre",
     "10": "octobre",
     "11": "novembre",
     "12": "décembre"
   },
   "en": {
-    "1": "january",
-    "2": "february",
-    "3": "march",
-    "4": "april",
-    "5": "may",
-    "6": "june",
-    "7": "july",
-    "8": "august",
-    "9": "september",
+    "01": "january",
+    "02": "february",
+    "03": "march",
+    "04": "april",
+    "05": "may",
+    "06": "june",
+    "07": "july",
+    "08": "august",
+    "09": "september",
     "10": "october",
     "11": "november",
     "12": "december"
   },
   "de": {
-    "1": "januar",
-    "2": "februar",
-    "3": "märz",
-    "4": "april",
-    "5": "mai",
-    "6": "juni",
-    "7": "juli",
-    "8": "august",
-    "9": "september",
+    "01": "januar",
+    "02": "februar",
+    "03": "märz",
+    "04": "april",
+    "05": "mai",
+    "06": "juni",
+    "07": "juli",
+    "08": "august",
+    "09": "september",
     "10": "oktober",
     "11": "november",
     "12": "dezember"
   },
   "it": {
-    "1": "gennaio",
-    "2": "febbraio",
-    "3": "marzo",
-    "4": "aprile",
-    "5": "maggio",
-    "6": "giugno",
-    "7": "luglio",
-    "8": "agosto",
-    "9": "settembre",
+    "01": "gennaio",
+    "02": "febbraio",
+    "03": "marzo",
+    "04": "aprile",
+    "05": "maggio",
+    "06": "giugno",
+    "07": "luglio",
+    "08": "agosto",
+    "09": "settembre",
     "10": "ottobre",
     "11": "novembre",
     "12": "dicembre"
   },
   "es": {
-    "1": "enero",
-    "2": "febrero",
-    "3": "marzo",
-    "4": "april",
-    "5": "mayo",
-    "6": "junio",
-    "7": "julio",
-    "8": "agosto",
-    "9": "septiembre",
+    "01": "enero",
+    "02": "febrero",
+    "03": "marzo",
+    "04": "april",
+    "05": "mayo",
+    "06": "junio",
+    "07": "julio",
+    "08": "agosto",
+    "09": "septiembre",
     "10": "octubre",
     "11": "noviembre",
     "12": "diciembre"
@@ -126,7 +126,7 @@ window = sg.Window("Folder Picker", layout)
 while True:
     # read the events in the window
     event, values = window.read()
-    print(values)
+    #print(values)
     if event == "Execute":
         # do something with the selected folder, language and format
         folder_path = values[0]
@@ -165,12 +165,15 @@ while True:
             image = Image.open(old_file_path)
             # Get the date taken from EXIF metadata
             date_taken = image._getexif()[36867]
+            image.close()
             mydict[file_name] = date_taken
-            
+
+        sorted_by_date_photos = dict(sorted(mydict.items(),key=lambda x:x[1]))
+
         date_day = ""
-        for key in sorted(mydict):
+        for key in sorted_by_date_photos:
             old_date_day = date_day
-            print(old_date_day)
+            #print(old_date_day)
             #print(key)
             # Get the file extension
             file_ext = os.path.splitext(key)[1]
@@ -195,7 +198,7 @@ while True:
             if date_format == "daymonthinc":
               date_day = date_taken.replace(" ",":").split(":")[2]
               date_month = date_taken.replace(" ",":").split(":")[1]
-              month_in_letter =  month_languages.get(language, {}).get(date_month)
+              month_in_letter = month_languages.get(language, {}).get(date_month)
         
               # Reformat the date taken to "YYYYMMDD-HHmmss"
               #date_time = date_taken \
