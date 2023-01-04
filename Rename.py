@@ -120,7 +120,6 @@ layout = [
     [sg.Radio("31décembre01", "FORMAT", key="daymonthinc", default=True)],
     [sg.Button("Execute"), sg.Button("Cancel")]
 ]
-
 # create the window and show it
 window = sg.Window("Folder Picker", layout)
 while True:
@@ -156,7 +155,7 @@ while True:
         
         # Get all files from folder
         file_names = os.listdir(folder_path)
-        
+        skipped_file = []
         mydict = {}
         for file_name in file_names:
             # Create the old file path
@@ -168,12 +167,12 @@ while True:
               date_taken = image._getexif()[36867]
               mydict[file_name] = date_taken
             except:
-              print("skipping " + file_name)
+              skipped_file.append(file_name)
 
             image.close()
 
         sorted_by_date_photos = dict(sorted(mydict.items(),key=lambda x:x[1]))
-
+        print(skipped_file)
         date_day = ""
         for key in sorted_by_date_photos:
             old_date_day = date_day
@@ -198,9 +197,7 @@ while True:
         
             # Close the image
             image.close()
-            if date_taken == "None":
-              print("no exif, skipping") 
-            elif date_format == "daymonthinc":
+            if date_format == "daymonthinc":
               date_day = date_taken.replace(" ",":").split(":")[2]
               date_month = date_taken.replace(" ",":").split(":")[1]
               month_in_letter = month_languages.get(language, {}).get(date_month)
@@ -238,7 +235,11 @@ while True:
                 new_file_path = os.path.join(folder_path, new_file_name)
             # Rename the file
             os.rename(old_file_path, new_file_path)
-            window.close()
+        if skipped_file:
+          sg.popup("Error on " + ' '.join(skipped_file))
+        else:
+          sg.popup("Success")
+        window.close()
     elif event == "Cancel" or event == sg.WIN_CLOSED:
         break
 
