@@ -30,7 +30,7 @@ import sys
 from pathlib import Path
 from PIL import Image
 
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 
 # Set dict for month in different language
 month_languages = {
