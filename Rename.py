@@ -27,9 +27,9 @@
 # Import libraries
 import os
 import sys
+import re
 from pathlib import Path
-from PIL import Image
-
+import exifread
 import FreeSimpleGUI as sg
 
 # Set dict for month in different language
@@ -125,7 +125,6 @@ window = sg.Window("Folder Picker", layout)
 while True:
     # read the events in the window
     event, values = window.read()
-    #print(values)
     if event == "Execute":
         # do something with the selected folder, language and format
         folder_path = values[0]
@@ -146,7 +145,7 @@ while True:
           date_format = "daymonthinc"
 
         # Set list of valid file extensions
-        valid_extensions = [".jpg", ".jpeg", ".png"]
+        valid_extensions = [".jpg", ".jpeg", ".png",".heic",".HEIC",".JPEG",".JPG",".PNG"]
 
         #if len(sys.argv) < 1:
         #    folder_path = input_file_path = sys.argv[1]
@@ -161,23 +160,22 @@ while True:
             # Create the old file path
             old_file_path = os.path.join(folder_path, file_name)
             # Open the image
-            image = Image.open(old_file_path)
+            image = open(old_file_path, 'rb')
             # Get the date taken from EXIF metadata
             try:
-              date_taken = image._getexif()[36867]
-              mydict[file_name] = date_taken
+              tags = exifread.process_file(image)
+              exifdate = tags["EXIF DateTimeOriginal"]
+              date_taken = re.findall(r'[0-9]{4}:[0-9]{2}:[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}', str(exifdate))
+              mydict[file_name] = date_taken[0]  
             except:
               skipped_file.append(file_name)
 
             image.close()
 
         sorted_by_date_photos = dict(sorted(mydict.items(),key=lambda x:x[1]))
-        print(skipped_file)
         date_day = ""
         for key in sorted_by_date_photos:
             old_date_day = date_day
-            #print(old_date_day)
-            #print(key)
             # Get the file extension
             file_ext = os.path.splitext(key)[1]
         
@@ -190,16 +188,17 @@ while True:
             old_file_path = os.path.join(folder_path, key)
         
             # Open the image
-            image = Image.open(old_file_path)
+            image2 = open(old_file_path, 'rb')
         
-            # Get the date taken from EXIF metadata
-            date_taken = image._getexif()[36867]
+            tags2 = exifread.process_file(image2)
+            exifdate2 = tags2["EXIF DateTimeOriginal"]
+            date_taken2 = re.findall(r'[0-9]{4}:[0-9]{2}:[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}', str(exifdate2))
         
             # Close the image
             image.close()
             if date_format == "daymonthinc":
-              date_day = date_taken.replace(" ",":").split(":")[2]
-              date_month = date_taken.replace(" ",":").split(":")[1]
+              date_day = date_taken2[0].replace(" ",":").split(":")[2]
+              date_month = date_taken2[0].replace(" ",":").split(":")[1]
               month_in_letter = month_languages.get(language, {}).get(date_month)
         
               # Reformat the date taken to "YYYYMMDD-HHmmss"
@@ -207,7 +206,6 @@ while True:
               #    .replace(":", "")      \
               #    .replace(" ", "-")
               date_time = date_day + month_in_letter
-        
               if not old_date_day:
                   inc = 1 
               elif old_date_day != date_day:
@@ -219,12 +217,12 @@ while True:
               else: 
                 inc += 1
                 new_file_name = date_time + str(inc) + file_ext
-        
+              
               # Create the new folder path
               new_file_path = os.path.join(folder_path, new_file_name)
             elif date_format== "yyyymmdd":
 
-                date_time = date_taken \
+                date_time = date_taken2[0] \
                     .replace(":", "")      \
                     .replace(" ", "-")
             
@@ -233,6 +231,7 @@ while True:
             
                 # Create the new folder path
                 new_file_path = os.path.join(folder_path, new_file_name)
+            
             # Rename the file
             os.rename(old_file_path, new_file_path)
         if skipped_file:
